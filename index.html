@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاصر اليافعي الحدي - المتجر الذكي</title>
+    <meta name="theme-color" content="#8b5a2b">
+    <style>
+        :root {
+            --primary-color: #8b5a2b;
+            --accent-color: #25d366;
+            --bg-color: #fdfbf7;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --header-img: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-switch {
+            background: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-switch button {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nav-switch button.active {
+            background: var(--primary-color);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            background-image: var(--header-img);
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px 100px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .title-wrapper {
+            text-align: center;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid #f0e6df;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .product-card img, .product-card video {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #f5f5f5;
+        }
+
+        .out-of-stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .product-details {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 6px;
+        }
+
+        .product-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .stock-info {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .price-tag {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-add:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-sizing: border-box;
+            z-index: 99;
+        }
+
+        .cart-total {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .btn-whatsapp {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .admin-panel {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+
+        .admin-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-section h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .btn-admin-action {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .admin-product-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .admin-product-row img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-switch">
+        <button id="btn-client-view" class="active" onclick="switchView('client')">واجهة المتجر (الزبائن)</button>
+        <button id="btn-admin-view" onclick="switchView('admin')">لوحة التحكم (المدير)</button>
+    </div>
+
+    <header id="main-header">
+        <h1 id="store-title">معاصر اليافعي الحدي</h1>
+        <p id="store-subtitle">زيوت سمسم طبيعية 100% - عصرة على البارد</p>
+    </header>
+
+    <div class="container" id="client-view-container">
+        <div class="title-wrapper">
+            <h2 class="section-title">قائمة المنتجات والزيوت</h2>
+        </div>
+        <div class="products-grid" id="products-container"></div>
+    </div>
+
+    <div class="cart-bar" id="client-cart-bar">
+        <div class="cart-info">
+            <span class="cart-count" id="cart-count">الإجمالي (0 منتجات)</span>
+            <span class="cart-total" id="cart-total">0 ريال</span>
+        </div>
+        <button class="btn-whatsapp" id="send-order-btn" onclick="sendOrderToWhatsApp()" disabled>
+            إرسال الطلب عبر الواتساب
+        </button>
+    </div>
+
+    <div class="container" id="admin-view-container" style="display: none;">
+        <div id="admin-login-screen" class="login-box">
+            <h3>تسجيل دخول المدير</h3>
+            <p style="font-size: 13px; color: #666;">أدخل كلمة المرور الخاصة بلوحة التحكم</p>
+            <div class="form-group">
+                <input type="password" id="admin-pass-input" placeholder="كلمة المرور">
+            </div>
+            <button class="btn-admin-action" onclick="checkAdminLogin()">دخول لوحة التحكم</button>
+        </div>
+
+        <div id="admin-dashboard-panel" class="admin-panel" style="display: none;">
+            <div class="admin-section">
+                <h3>إعدادات المتجر والهوية</h3>
+                <div class="form-group">
+                    <label>اسم المتجر:</label>
+                    <input type="text" id="cfg-title">
+                </div>
+                <div class="form-group">
+                    <label>الوصف الترحيبي:</label>
+                    <input type="text" id="cfg-subtitle">
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب لاستلام الطلبات (مع الرمز الدولي):</label>
+                    <input type="text" id="cfg-phone">
+                </div>
+                <div class="form-group">
+                    <label>لون الخلفية العام للمتجر:</label>
+                    <input type="color" id="cfg-bgcolor" style="height: 40px; cursor: pointer;">
+                </div>
+                <div class="form-group">
+                    <label>صورة الهيدر أو الخلفية (الكاميرا / الاستوديو):</label>
+                    <input type="file" id="cfg-header-img-file" accept="image/*" onchange="previewHeaderImage(event)">
+                </div>
+                <button class="btn-admin-action" onclick="saveStoreConfig()">حفظ إعدادات الهوية</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>إضافة منتج جديد (صورة أو فيديو من الاستوديو)</h3>
+                <div class="form-group">
+                    <label>اسم المنتج *:</label>
+                    <input type="text" id="new-p-name" placeholder="مثال: زيت سمسم بلدي أبيني">
+                </div>
+                <div class="form-group">
+                    <label>وصف مختصر:</label>
+                    <input type="text" id="new-p-desc" placeholder="مثال: صافي 100% عصارة تقليدية">
+                </div>
+                <div class="form-group">
+                    <label>السعر (ريال):</label>
+                    <input type="number" id="new-p-price" placeholder="6000">
+                </div>
+                <div class="form-group">
+                    <label>كمية المخزون المتاحة:</label>
+                    <input type="number" id="new-p-stock" value="10">
+                </div>
+                <div class="form-group">
+                    <label>صورة المنتج (إذا لم ترفع فيديو):</label>
+                    <input type="file" id="new-p-img-file" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>أو رفع مقطع فيديو للمنتج من الاستوديو/الكاميرا:</label>
+                    <input type="file" id="new-p-vid-file" accept="video/*">
+                </div>
+                <button class="btn-admin-action" onclick="addNewProduct()">إضافة المنتج للقائمة</button>
+            </div>
+
+            <div class="admin-section">
+                <h3>إدارة المنتجات الحالية (تعديل، ترتيب، حذف)</h3>
+                <div id="admin-products-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultData = {
+            settings: {
+                storeTitle: "معاصر اليافعي الحدي",
+                storeSubtitle: "زيوت سمسم طبيعية 100% - عصرة على البارد",
+                phoneNumber: "967770000000",
+                bgColor: "#fdfbf7",
+                headerBgImage: ""
+            },
+            products: [
+                { id: 1, name: "زيت سمسم بلدي أبيني", desc: "صافي 100% عصارة تقليدية", price: 6000, stock: 5, type: "image", media: "https://via.placeholder.com/250x180/8b5a2b/ffffff?text=زيت+أبيني" },
+                { id: 2, name: "زيت سمسم لودري", desc: "نكهة فريدة وجودة عالية", price: 6500, stock: 2, type: "image", media: "https://via.placeholder.com/250x180/8b5a2b/ffffff?text=زيت+لودري" }
+            ]
+        };
+
+        let storeSettings = JSON.parse(localStorage.getItem('admin_settings')) || defaultData.settings;
+        let productsList = JSON.parse(localStorage.getItem('admin_products')) || defaultData.products;
+        let cart = [];
+        let tempHeaderImg = storeSettings.headerBgImage;
+
+        function switchView(view) {
+            if(view === 'client') {
+                document.getElementById('client-view-container').style.display = 'block';
+                document.getElementById('client-cart-bar').style.display = 'flex';
+                document.getElementById('admin-view-container').style.display = 'none';
+                document.getElementById('btn-client-view').classList.add('active');
+                document.getElementById('btn-admin-view').classList.remove('active');
+                renderClientProducts();
+            } else {
+                document.getElementById('client-view-container').style.display = 'none';
+                document.getElementById('client-cart-bar').style.display = 'none';
+                document.getElementById('admin-view-container').style.display = 'block';
+                document.getElementById('btn-admin-view').classList.add('active');
+                document.getElementById('btn-client-view').classList.remove('active');
+            }
+        }
+
+        function checkAdminLogin() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if(pass === "1234" || pass === "admin") {
+                document.getElementById('admin-login-screen').style.display = 'none';
+                document.getElementById('admin-dashboard-panel').style.display = 'block';
+                loadAdminSettingsForm();
+                renderAdminProductsList();
+            } else {
+                alert("كلمة المرور غير صحيحة!");
+            }
+        }
+
+        function applySettings() {
+            document.documentElement.style.setProperty('--bg-color', storeSettings.bgColor);
+            document.getElementById('store-title').innerText = storeSettings.storeTitle;
+            document.getElementById('store-subtitle').innerText = storeSettings.storeSubtitle;
+            if(storeSettings.headerBgImage) {
+                document.getElementById('main-header').style.backgroundImage = `url('${storeSettings.headerBgImage}')`;
+            }
+        }
+
+        function renderClientProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = "";
+
+            productsList.forEach(product => {
+                const isOutOfStock = product.stock <= 0;
+                let mediaElement = '';
+                if(product.type === 'video') {
+                    mediaElement = `<video src="${product.media}" controls preload="metadata"></video>`;
+                } else {
+                    mediaElement = `<img src="${product.media}" alt="${product.name}">`;
+                }
+
+                container.innerHTML += `
+                    <div class="product-card">
+                        ${isOutOfStock ? '<div class="out-of-stock-badge">نفدت الكمية</div>' : ''}
+                        ${mediaElement}
+                        <div class="product-details">
+                            <div>
+                                <h3 class="product-name">${product.name}</h3>
+                                <p class="product-desc">${product.desc || ''}</p>
+                                <div class="stock-info">المتاحة: ${product.stock} عبوات</div>
+                            </div>
+                            <div>
+                                <div class="price-tag">${product.price.toLocaleString()} ريال</div>
+                                <button class="btn-add" ${isOutOfStock ? 'disabled' : ''} onclick="addToCart(${product.id})">
+                                    ${isOutOfStock ? 'غير متوفر' : 'إضافة للسلة'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(productId) {
+            const product = productsList.find(p => p.id === productId);
+            if(product && product.stock > 0) {
+                cart.push(product);
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-count').innerText = `الإجمالي (${cart.length} منتجات)`;
+            document.getElementById('cart-total').innerText = `${total.toLocaleString()} ريال`;
+            document.getElementById('send-order-btn').disabled = cart.length === 0;
+        }
+
+        function sendOrderToWhatsApp() {
+            if(cart.length === 0) return;
+            let message = `مرحباً ${storeSettings.storeTitle}، أرغب بتأكيد الطلب التالي:\n\n`;
+            const counts = {};
+            cart.forEach(item => { counts[item.name] = (counts[item.name] || 0) + 1; });
+            for(const [name, count] of Object.entries(counts)) { message += `• ${name} × ${count}\n`; }
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            message += `\n*الإجمالي:* ${total.toLocaleString()} ريال`;
+
+            window.open(`https://wa.me/${storeSettings.phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function loadAdminSettingsForm() {
+            document.getElementById('cfg-title').value = storeSettings.storeTitle;
+            document.getElementById('cfg-subtitle').value = storeSettings.storeSubtitle;
+            document.getElementById('cfg-phone').value = storeSettings.phoneNumber;
+            document.getElementById('cfg-bgcolor').value = storeSettings.bgColor;
+        }
+
+        function previewHeaderImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { tempHeaderImg = e.target.result; }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveStoreConfig() {
+            storeSettings.storeTitle = document.getElementById('cfg-title').value;
+            storeSettings.storeSubtitle = document.getElementById('cfg-subtitle').value;
+            storeSettings.phoneNumber = document.getElementById('cfg-phone').value;
+            storeSettings.bgColor = document.getElementById('cfg-bgcolor').value;
+            storeSettings.headerBgImage = tempHeaderImg;
+
+            localStorage.setItem('admin_settings', JSON.stringify(storeSettings));
+            applySettings();
+            alert("تم حفظ إعدادات الهوية بنجاح!");
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('new-p-name').value;
+            const desc = document.getElementById('new-p-desc').value;
+            const price = parseFloat(document.getElementById('new-p-price').value);
+            const stock = parseInt(document.getElementById('new-p-stock').value) || 0;
+            const imgFile = document.getElementById('new-p-img-file').files[0];
+            const vidFile = document.getElementById('new-p-vid-file').files[0];
+
+            if(!name || !price || (!imgFile && !vidFile)) {
+                alert("يرجى إدخال اسم المنتج، السعر، واختيار صورة أو فيديو للمنتج!");
+                return;
+            }
+
+            const reader = new FileReader();
+            if(vidFile) {
+                reader.onload = function(e) {
+                    saveNewProductData(name, desc, price, stock, 'video', e.target.result);
+                };
+                reader.readAsDataURL(vidFile);
+            } else if(imgFile) {
+                reader.onload = function(e) {
+                    saveNewProductData(name, desc, price, stock, 'image', e.target.result);
+                };
+                reader.readAsDataURL(imgFile);
+            }
+        }
+
+        function saveNewProductData(name, desc, price, stock, type, media) {
+            const newProduct = {
+                id: Date.now(),
+                name: name,
+                desc: desc,
+                price: price,
+                stock: stock,
+                type: type,
+                media: media
+            };
+            productsList.push(newProduct);
+            localStorage.setItem('admin_products', JSON.stringify(productsList));
+            
+            document.getElementById('new-p-name').value = '';
+            document.getElementById('new-p-desc').value = '';
+            document.getElementById('new-p-price').value = '';
+            document.getElementById('new-p-stock').value = '10';
+            document.getElementById('new-p-img-file').value = '';
+            document.getElementById('new-p-vid-file').value = '';
+
+            renderAdminProductsList();
+            alert("تم إضافة المنتج بنجاح!");
+        }
+
+        function renderAdminProductsList() {
+            const container = document.getElementById('admin-products-list');
+            container.innerHTML = "";
+
+            productsList.forEach((product, index) => {
+                let thumb = product.type === 'video' ? '<span style="font-size:10px; background:#333; color:#fff; padding:4px; border-radius:4px;">فيديو</span>' : `<img src="${product.media}" alt="">`;
+                container.innerHTML += `
+                    <div class="admin-product-row">
+                        ${thumb}
+                        <div style="flex-grow: 1;">
+                            <input type="text" value="${product.name}" id="edit-name-${product.id}" style="margin-bottom: 5px; width: 100%;">
+                            <div style="display: flex; gap: 5px;">
+                                <input type="number" value="${product.price}" id="edit-price-${product.id}" style="width: 80px;" placeholder="السعر">
+                                <input type="number" value="${product.stock}" id="edit-stock-${product.id}" style="width: 70px;" placeholder="المخزون">
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <button onclick="updateProduct(${product.id})" style="background: #27ae60; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">حفظ</button>
+                            <button onclick="moveProduct(${index}, -1)" style="background: #34495e; color:white; border:none; padding:2px; cursor:pointer;">▲</button>
+                            <button onclick="moveProduct(${index}, 1)" style="background: #34495e; color:white; border:none; padding:2px; cursor:pointer;">▼</button>
+                            <button onclick="deleteProduct(${product.id})" style="background: #e74c3c; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateProduct(id) {
+            const product = productsList.find(p => p.id === id);
+            if(product) {
+                product.name = document.getElementById(`edit-name-${id}`).value;
+                product.price = parseFloat(document.getElementById(`edit-price-${id}`).value) || 0;
+                product.stock = parseInt(document.getElementById(`edit-stock-${id}`).value) || 0;
+                
+                localStorage.setItem('admin_products', JSON.stringify(productsList));
+                alert("تم تحديث بيانات المنتج بنجاح!");
+            }
+        }
+
+        function deleteProduct(id) {
+            if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+                productsList = productsList.filter(p => p.id !== id);
+                localStorage.setItem('admin_products', JSON.stringify(productsList));
+                renderAdminProductsList();
+            }
+        }
+
+        function moveProduct(index, direction) {
+            const newIndex = index + direction;
+            if(newIndex >= 0 && newIndex < productsList.length) {
+                const temp = productsList[index];
+                productsList[index] = productsList[newIndex];
+                productsList[newIndex] = temp;
+                localStorage.setItem('admin_products', JSON.stringify(productsList));
+                renderAdminProductsList();
+            }
+        }
+
+        applySettings();
+        renderClientProducts();
+    </script>
+</body>
+</html>
