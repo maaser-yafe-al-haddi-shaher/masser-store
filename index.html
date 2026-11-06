@@ -363,7 +363,7 @@
                     <input type="color" id="cfg-bgcolor" style="height: 40px; cursor: pointer;">
                 </div>
                 <div class="form-group">
-                    <label>صورة الهيدر أو الخلفية (الكاميرا / الاستوديو):</label>
+                    <label>صورة الهيدر أو الخلفية:</label>
                     <input type="file" id="cfg-header-img-file" accept="image/*" onchange="previewHeaderImage(event)">
                 </div>
                 <button class="btn-admin-action" onclick="saveStoreConfig()">حفظ إعدادات الهوية</button>
@@ -373,11 +373,11 @@
                 <h3>إضافة منتج جديد (صورة أو فيديو من الاستوديو)</h3>
                 <div class="form-group">
                     <label>اسم المنتج *:</label>
-                    <input type="text" id="new-p-name" placeholder="مثال: زيت سمسم بلدي أبيني">
+                    <input type="text" id="new-p-name" placeholder="مثال: صليط الجلجل البلدي الممتاز">
                 </div>
                 <div class="form-group">
                     <label>وصف مختصر:</label>
-                    <input type="text" id="new-p-desc" placeholder="مثال: صافي 100% عصارة تقليدية">
+                    <input type="text" id="new-p-desc" placeholder="مثال: صافي 100% عصارة تقليدية على البارد">
                 </div>
                 <div class="form-group">
                     <label>السعر (ريال):</label>
@@ -388,11 +388,11 @@
                     <input type="number" id="new-p-stock" value="10">
                 </div>
                 <div class="form-group">
-                    <label>صورة المنتج (إذا لم ترفع فيديو):</label>
+                    <label>صورة المنتج:</label>
                     <input type="file" id="new-p-img-file" accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label>أو رفع مقطع فيديو للمنتج من الاستوديو/الكاميرا:</label>
+                    <label>أو مقطع فيديو للمنتج:</label>
                     <input type="file" id="new-p-vid-file" accept="video/*">
                 </div>
                 <button class="btn-admin-action" onclick="addNewProduct()">إضافة المنتج للقائمة</button>
@@ -409,14 +409,13 @@
         const defaultData = {
             settings: {
                 storeTitle: "معاصر اليافعي الحدي",
-                storeSubtitle: "زيوت سمسم طبيعية 100% - عصرة على البارد",
+                storeSubtitle: "صليط الجلجل البلدي الممتاز 100% - عصارة تقليدية على البارد",
                 phoneNumber: "967770000000",
                 bgColor: "#fdfbf7",
                 headerBgImage: ""
             },
             products: [
-                { id: 1, name: "زيت سمسم بلدي أبيني", desc: "صافي 100% عصارة تقليدية", price: 6000, stock: 5, type: "image", media: "https://via.placeholder.com/250x180/8b5a2b/ffffff?text=زيت+أبيني" },
-                { id: 2, name: "زيت سمسم لودري", desc: "نكهة فريدة وجودة عالية", price: 6500, stock: 2, type: "image", media: "https://via.placeholder.com/250x180/8b5a2b/ffffff?text=زيت+لودري" }
+                { id: 1, name: "صليط الجلجل البلدي الممتاز", desc: "صافي 100% عصارة تقليدية على البارد", price: 6000, stock: 10, type: "image", media: "https://via.placeholder.com/250x180/8b5a2b/ffffff?text=صليط+الجلجل" }
             ]
         };
 
@@ -545,7 +544,7 @@
             storeSettings.storeTitle = document.getElementById('cfg-title').value;
             storeSettings.storeSubtitle = document.getElementById('cfg-subtitle').value;
             storeSettings.phoneNumber = document.getElementById('cfg-phone').value;
-            storeSettings.bgColor = document.getElementById('cfg-bgcolor').value;
+            storeSettings.bgColor = document.getElementById('cfg-bgcolor5') || document.getElementById('cfg-bgcolor').value;
             storeSettings.headerBgImage = tempHeaderImg;
 
             localStorage.setItem('admin_settings', JSON.stringify(storeSettings));
@@ -557,113 +556,4 @@
             const name = document.getElementById('new-p-name').value;
             const desc = document.getElementById('new-p-desc').value;
             const price = parseFloat(document.getElementById('new-p-price').value);
-            const stock = parseInt(document.getElementById('new-p-stock').value) || 0;
-            const imgFile = document.getElementById('new-p-img-file').files[0];
-            const vidFile = document.getElementById('new-p-vid-file').files[0];
-
-            if(!name || !price || (!imgFile && !vidFile)) {
-                alert("يرجى إدخال اسم المنتج، السعر، واختيار صورة أو فيديو للمنتج!");
-                return;
-            }
-
-            const reader = new FileReader();
-            if(vidFile) {
-                reader.onload = function(e) {
-                    saveNewProductData(name, desc, price, stock, 'video', e.target.result);
-                };
-                reader.readAsDataURL(vidFile);
-            } else if(imgFile) {
-                reader.onload = function(e) {
-                    saveNewProductData(name, desc, price, stock, 'image', e.target.result);
-                };
-                reader.readAsDataURL(imgFile);
-            }
-        }
-
-        function saveNewProductData(name, desc, price, stock, type, media) {
-            const newProduct = {
-                id: Date.now(),
-                name: name,
-                desc: desc,
-                price: price,
-                stock: stock,
-                type: type,
-                media: media
-            };
-            productsList.push(newProduct);
-            localStorage.setItem('admin_products', JSON.stringify(productsList));
-            
-            document.getElementById('new-p-name').value = '';
-            document.getElementById('new-p-desc').value = '';
-            document.getElementById('new-p-price').value = '';
-            document.getElementById('new-p-stock').value = '10';
-            document.getElementById('new-p-img-file').value = '';
-            document.getElementById('new-p-vid-file').value = '';
-
-            renderAdminProductsList();
-            alert("تم إضافة المنتج بنجاح!");
-        }
-
-        function renderAdminProductsList() {
-            const container = document.getElementById('admin-products-list');
-            container.innerHTML = "";
-
-            productsList.forEach((product, index) => {
-                let thumb = product.type === 'video' ? '<span style="font-size:10px; background:#333; color:#fff; padding:4px; border-radius:4px;">فيديو</span>' : `<img src="${product.media}" alt="">`;
-                container.innerHTML += `
-                    <div class="admin-product-row">
-                        ${thumb}
-                        <div style="flex-grow: 1;">
-                            <input type="text" value="${product.name}" id="edit-name-${product.id}" style="margin-bottom: 5px; width: 100%;">
-                            <div style="display: flex; gap: 5px;">
-                                <input type="number" value="${product.price}" id="edit-price-${product.id}" style="width: 80px;" placeholder="السعر">
-                                <input type="number" value="${product.stock}" id="edit-stock-${product.id}" style="width: 70px;" placeholder="المخزون">
-                            </div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <button onclick="updateProduct(${product.id})" style="background: #27ae60; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">حفظ</button>
-                            <button onclick="moveProduct(${index}, -1)" style="background: #34495e; color:white; border:none; padding:2px; cursor:pointer;">▲</button>
-                            <button onclick="moveProduct(${index}, 1)" style="background: #34495e; color:white; border:none; padding:2px; cursor:pointer;">▼</button>
-                            <button onclick="deleteProduct(${product.id})" style="background: #e74c3c; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">حذف</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateProduct(id) {
-            const product = productsList.find(p => p.id === id);
-            if(product) {
-                product.name = document.getElementById(`edit-name-${id}`).value;
-                product.price = parseFloat(document.getElementById(`edit-price-${id}`).value) || 0;
-                product.stock = parseInt(document.getElementById(`edit-stock-${id}`).value) || 0;
-                
-                localStorage.setItem('admin_products', JSON.stringify(productsList));
-                alert("تم تحديث بيانات المنتج بنجاح!");
-            }
-        }
-
-        function deleteProduct(id) {
-            if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-                productsList = productsList.filter(p => p.id !== id);
-                localStorage.setItem('admin_products', JSON.stringify(productsList));
-                renderAdminProductsList();
-            }
-        }
-
-        function moveProduct(index, direction) {
-            const newIndex = index + direction;
-            if(newIndex >= 0 && newIndex < productsList.length) {
-                const temp = productsList[index];
-                productsList[index] = productsList[newIndex];
-                productsList[newIndex] = temp;
-                localStorage.setItem('admin_products', JSON.stringify(productsList));
-                renderAdminProductsList();
-            }
-        }
-
-        applySettings();
-        renderClientProducts();
-    </script>
-</body>
-</html>
+            const stock = parseInt(do
